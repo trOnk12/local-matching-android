@@ -6,6 +6,17 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
 
+    android{
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.local_matching"
         minSdkVersion 16
@@ -34,6 +45,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    def work_version = "1.0.0-beta02"
-    implementation "android.arch.work:work-runtime-ktx:$work_version"
+
+    // Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
+    implementation "com.google.android.gms:play-services-location:17.1.0"
 }
