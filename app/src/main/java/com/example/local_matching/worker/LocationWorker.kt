@@ -13,19 +13,24 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 class LocationWorker(appContext: Context, workersParams: WorkerParameters) :
     CoroutineWorker(appContext, workersParams) {
 
     private val locationRetriever = LocationRetriever(appContext)
 
-    override suspend fun doWork(): Result {
-    //    locationRetriever.getUserLocation()
+    override suspend fun doWork() = tryAndRethrow { locationRetriever.getUserLocation() }
 
-        Log.d("TEST", "location is ")
+    private suspend fun tryAndRethrow(tryBlock: suspend () -> Unit): Result {
+        return try {
+            tryBlock()
 
-        return Result.success()
+            Result.success()
+        } catch (exception: Exception) {
+            Result.failure()
+
+            throw exception
+        }
     }
 
 }
