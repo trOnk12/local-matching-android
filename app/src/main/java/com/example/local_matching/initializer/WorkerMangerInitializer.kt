@@ -8,8 +8,8 @@ import android.database.Cursor
 import android.net.Uri
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import com.example.local_matching.worker.LocationWorkerConfiguration
-import com.example.local_matching.worker.LocationWorkerManager
+import com.example.local_matching.location.LocationWorkerConfiguration
+import com.example.local_matching.location.LocationWorkerManager
 
 
 class WorkerMangerInitializer : ContentProvider() {
