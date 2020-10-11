@@ -35,39 +35,76 @@ class LocationWorker(appContext: Context, workersParams: WorkerParameters) :
 
 }
 
-class LocationWorkerManager(private val appContext: Context) {
+class LocationWorkerManager private constructor() {
     companion object {
-        private const val LOCATION_PERIODIC_WORK_NAME = "location_periodic_work"
-        private const val MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES: Long = 15
-    }
 
-    fun startPeriodRequest(
-        requestInterval: RequestInterval = RequestInterval(
-            MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES
-        )
-    ) {
-        if (requestInterval.minutes < MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES) {
-            enqueuePeriodicWork(buildPeriodicWorkRequest(requestInterval))
-        } else {
-            enqueuePeriodicWork(buildPeriodicWorkRequest(requestInterval))
+        private const val LOCATION_PERIODIC_WORK_NAME = "location_periodic_work"
+
+        internal const val MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES: Long = 15
+
+        internal fun initialize(
+            appContext: Context,
+            locationWorkerConfiguration: LocationWorkerConfiguration
+        ) {
+            startPeriodRequest(appContext, locationWorkerConfiguration)
+        }
+
+        private fun startPeriodRequest(
+            appContext: Context,
+            locationWorkerConfiguration: LocationWorkerConfiguration
+        ) {
+            with(locationWorkerConfiguration) {
+                if (requestInterval.minutes < MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES) {
+                    enqueuePeriodicWork(appContext, buildPeriodicWorkRequest(requestInterval))
+                } else {
+                    enqueuePeriodicWork(appContext, buildPeriodicWorkRequest(requestInterval))
+                }
+            }
+        }
+
+        private fun buildPeriodicWorkRequest(
+            requestInterval: RequestInterval
+        ) =
+            PeriodicWorkRequestBuilder<LocationWorker>(
+                requestInterval.minutes,
+                TimeUnit.MINUTES
+            ).build()
+
+        private fun enqueuePeriodicWork(
+            appContext: Context,
+            periodicWorkRequest: PeriodicWorkRequest
+        ) {
+            WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
+                LOCATION_PERIODIC_WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                periodicWorkRequest
+            )
         }
     }
 
-    private fun buildPeriodicWorkRequest(requestInterval: RequestInterval) =
-        PeriodicWorkRequestBuilder<LocationWorker>(
-            requestInterval.minutes,
-            TimeUnit.MINUTES
-        ).build()
-
-    private fun enqueuePeriodicWork(periodicWorkRequest: PeriodicWorkRequest) {
-        WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
-            LOCATION_PERIODIC_WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            periodicWorkRequest
-        )
-    }
-
 }
+
+
+class LocationWorkerConfiguration(
+    val requestInterval: RequestInterval = RequestInterval()
+) {
+    internal class Builder {
+
+        private var requestInterval: RequestInterval = RequestInterval()
+
+        fun setRequestInterval(requestInterval: RequestInterval): Builder {
+            this.requestInterval = requestInterval
+
+            return this
+        }
+
+        fun build(): LocationWorkerConfiguration {
+            return LocationWorkerConfiguration(requestInterval)
+        }
+
+    }
+}
+
 
 class LocationRetriever(private val appContext: Context) {
 
@@ -104,5 +141,5 @@ class LocationRetriever(private val appContext: Context) {
 }
 
 data class RequestInterval(
-    val minutes: Long
+    val minutes: Long = LocationWorkerManager.MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES
 )
