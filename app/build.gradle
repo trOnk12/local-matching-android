@@ -53,4 +53,6 @@ dependencies {
 
     // For developers using AndroidX in their applications
     implementation 'pub.devrel:easypermissions:3.0.0'
+
+    implementation "androidx.startup:startup-runtime:1.0.0-beta01"
 }
