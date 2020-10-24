@@ -23,18 +23,21 @@ class WorkerMangerInitializer : ContentProvider() {
         return true
     }
 
+    private fun initializeWorkerManager(context: Context) {
+        Configuration.Builder().build().let { configuration ->
+            WorkManager.initialize(
+                context.applicationContext,
+                configuration
+            )
+        }
+    }
+
     private fun initializeLocationWorkerManager(context: Context) {
         LocationWorkerConfiguration.Builder().build().let { locationWorkerConfiguration ->
             LocationWorkerManager.initialize(
                 context.applicationContext,
                 locationWorkerConfiguration
             )
-        }
-    }
-
-    private fun initializeWorkerManager(context: Context) {
-        Configuration.Builder().build().let { configuration ->
-            WorkManager.initialize(context.applicationContext, configuration)
         }
     }
 

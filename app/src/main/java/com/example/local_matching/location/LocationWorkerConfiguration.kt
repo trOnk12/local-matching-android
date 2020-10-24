@@ -1,11 +1,22 @@
 package com.example.local_matching.location
 
-class LocationWorkerConfiguration(
+import com.example.local_matching.location.LocationWorkerManager.Companion.MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES
+
+class LocationWorkerConfiguration private constructor(
     val requestInterval: RequestInterval = RequestInterval()
 ) {
     internal class Builder {
 
-        private var requestInterval: RequestInterval = RequestInterval()
+        private var requestInterval: RequestInterval? = null
+            set(value) {
+                if (value != null) {
+                    if (value.minutes < MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES) {
+                        throw Exception("Minimum periodic time interval must be greater than 15 minutes")
+                    }
+                }
+
+                field = value
+            }
 
         fun setRequestInterval(requestInterval: RequestInterval): Builder {
             this.requestInterval = requestInterval
@@ -14,13 +25,16 @@ class LocationWorkerConfiguration(
         }
 
         fun build(): LocationWorkerConfiguration {
-            return LocationWorkerConfiguration(requestInterval)
+            return LocationWorkerConfiguration(
+                requestInterval = requestInterval
+                    ?: RequestInterval(MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES)
+            )
         }
 
     }
 }
 
 data class RequestInterval(
-    val minutes: Long = LocationWorkerManager.MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES
+    val minutes: Long = MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES
 )
 
