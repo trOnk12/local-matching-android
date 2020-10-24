@@ -1,7 +1,6 @@
 package com.example.local_matching.location
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 

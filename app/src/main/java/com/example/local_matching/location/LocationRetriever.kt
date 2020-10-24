@@ -16,20 +16,18 @@ import kotlin.coroutines.resumeWithException
 
 class LocationRetriever(appContext: Context) {
 
-    private val requiredPermissions: List<String>
-        get() {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                listOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                )
-            } else {
-                listOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                )
-            }
+    private val requiredPermissions: List<String> =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            )
+        } else {
+            listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            )
         }
 
     private val fusedLocationClient: FusedLocationProviderClient =
@@ -48,6 +46,7 @@ class LocationRetriever(appContext: Context) {
             is PermissionStatus.Denied -> throw Exception("This library required ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION")
         }
     }
+
     @SuppressLint("MissingPermission")
     private suspend fun getLocation() =
         suspendCancellableCoroutine<Location> { cancellableContinuation ->

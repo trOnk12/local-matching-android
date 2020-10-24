@@ -30,7 +30,6 @@ class PermissionChecker(private val appContext: Context) {
 
 }
 
-
 sealed class PermissionStatus {
     object Granted : PermissionStatus()
     object Denied : PermissionStatus()
