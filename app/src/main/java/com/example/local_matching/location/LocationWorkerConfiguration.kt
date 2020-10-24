@@ -1,7 +1,5 @@
 package com.example.local_matching.location
 
-import com.example.local_matching.location.LocationWorkerManager.Companion.MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES
-
 class LocationWorkerConfiguration private constructor(
     val requestInterval: RequestInterval = RequestInterval()
 ) {
