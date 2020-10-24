@@ -3,18 +3,17 @@ package com.example.local_matching.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
-import com.example.local_matching.location.PermissionStatus
 
 class PermissionChecker(private val appContext: Context) {
 
-    fun checkPermissions(vararg permissions: List<String>): PermissionStatus {
+    fun checkPermissions(permissions: List<String>): PermissionStatus {
         permissions.forEach { permission ->
-            if (checkPermission(permission) == com.example.local_matching.utils.PermissionStatus.Denied) {
-                return com.example.local_matching.utils.PermissionStatus.Denied
+            if (checkPermission(permission) == PermissionStatus.Denied) {
+                return PermissionStatus.Denied
             }
         }
 
-        return com.example.local_matching.utils.PermissionStatus.Granted
+        return PermissionStatus.Granted
     }
 
     private fun checkPermission(permission: String): PermissionStatus {
@@ -23,9 +22,9 @@ class PermissionChecker(private val appContext: Context) {
                 permission
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            com.example.local_matching.utils.PermissionStatus.Denied
+            PermissionStatus.Denied
         } else {
-            com.example.local_matching.utils.PermissionStatus.Granted
+            PermissionStatus.Granted
         }
     }
 
