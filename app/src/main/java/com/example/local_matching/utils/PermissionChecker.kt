@@ -20,11 +20,11 @@ class PermissionChecker(private val appContext: Context) {
         return if (ActivityCompat.checkSelfPermission(
                 appContext,
                 permission
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
-            PermissionStatus.Denied
-        } else {
             PermissionStatus.Granted
+        } else {
+            PermissionStatus.Denied
         }
     }
 
