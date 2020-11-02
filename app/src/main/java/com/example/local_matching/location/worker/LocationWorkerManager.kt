@@ -1,10 +1,12 @@
-package com.example.local_matching.location
+package com.example.local_matching.location.worker
 
 import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.local_matching.location.worker.configuration.LocationWorkerConfiguration
+import com.example.local_matching.location.worker.configuration.RequestInterval
 import java.util.concurrent.TimeUnit
 
 const val MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES: Long = 15
@@ -12,12 +14,9 @@ const val MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES: Long = 15
 object LocationWorkerManager {
     private const val LOCATION_PERIODIC_WORK_NAME = "location_periodic_work"
 
-    internal fun initialize(
-        appContext: Context,
-        locationWorkerConfiguration: LocationWorkerConfiguration
-    ) {
+    operator fun invoke(context: Context, locationWorkerConfiguration: LocationWorkerConfiguration){
         with(locationWorkerConfiguration) {
-            enqueuePeriodicWork(appContext, buildPeriodicWorkRequest(requestInterval))
+            enqueuePeriodicWork(context, buildPeriodicWorkRequest(requestInterval))
         }
     }
 

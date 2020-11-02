@@ -29,8 +29,14 @@
             android:enabled="false"/>
 
         <provider
-            android:name=".initializer.WorkerMangerInitializer"
+            android:name=".initializer.workmanager.WorkerMangerInitializer"
             android:authorities="${applicationId}.workermangerinitializer"
+            android:enabled="true"
+            android:exported="false" />
+
+        <provider
+            android:name=".initializer.location.LocationWorkerInitializer"
+            android:authorities="${applicationId}.locationworkerinitializer"
             android:enabled="true"
             android:exported="false" />
 

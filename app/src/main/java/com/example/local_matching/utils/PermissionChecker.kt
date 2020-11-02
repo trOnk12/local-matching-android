@@ -3,8 +3,12 @@ package com.example.local_matching.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import javax.inject.Inject
 
-class PermissionChecker(private val appContext: Context) {
+class PermissionChecker
+@Inject constructor(
+    private val appContext: Context
+) {
 
     fun checkPermissions(permissions: List<String>): PermissionStatus {
         permissions.forEach { permission ->
@@ -17,11 +21,7 @@ class PermissionChecker(private val appContext: Context) {
     }
 
     private fun checkPermission(permission: String): PermissionStatus {
-        return if (ActivityCompat.checkSelfPermission(
-                appContext,
-                permission
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        return if (ActivityCompat.checkSelfPermission(appContext, permission) == PackageManager.PERMISSION_GRANTED) {
             PermissionStatus.Granted
         } else {
             PermissionStatus.Denied
