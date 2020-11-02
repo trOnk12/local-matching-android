@@ -12,7 +12,7 @@ class LocationRepository @Inject constructor(
     private val locationRetriever : ILocationRetriever
 ) {
 
-    suspend fun getLocation() =
+     fun getLocation() =
         when(permissionChecker.checkPermissions(getRequiredPermissions())){
             is PermissionStatus.Granted -> locationRetriever.getLocation()
             is PermissionStatus.Denied -> throw Exception("No permission granted to retrieve user location")

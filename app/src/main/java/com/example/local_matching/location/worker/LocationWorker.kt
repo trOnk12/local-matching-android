@@ -7,6 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.local_matching.core.tryAndRethrow
 import com.example.local_matching.location.repository.LocationRepository
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -17,15 +18,21 @@ class LocationWorker @WorkerInject constructor(
 ) : CoroutineWorker(appContext, workersParams) {
 
     override suspend fun doWork() = tryAndRethrow {
-        locationRepository.getLocation()
+        val locationData = locationRepository.getLocation()
+
+        if (locationData == null) {
+            Timber.i("No location found yet!")
+        } else {
+            Timber.d("Location found: $locationData")
+        }
     }
 
     class Factory @Inject constructor(
-        private val locationRepository : Provider<LocationRepository>
+        private val locationRepository: Provider<LocationRepository>
     ) : ChildWorkerFactory {
 
         override fun create(appContext: Context, params: WorkerParameters): CoroutineWorker {
-            return LocationWorker(appContext,params,locationRepository.get())
+            return LocationWorker(appContext, params, locationRepository.get())
         }
 
     }
