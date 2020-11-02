@@ -5,7 +5,7 @@ import com.example.local_matching.location.worker.MINIMUM_PERIODIC_TIME_INTERVAL
 class LocationWorkerConfiguration private constructor(
     val requestInterval: RequestInterval = RequestInterval()
 ) {
-    internal class Builder {
+    class Builder {
 
         private var requestInterval: RequestInterval? = null
             set(value) {

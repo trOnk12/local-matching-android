@@ -6,25 +6,31 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.local_matching.location.worker.configuration.LocationWorkerConfiguration
-import com.example.local_matching.location.worker.configuration.RequestInterval
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 const val MINIMUM_PERIODIC_TIME_INTERVAL_IN_MINUTES: Long = 15
 
-object LocationWorkerManager {
-    private const val LOCATION_PERIODIC_WORK_NAME = "location_periodic_work"
-
-    operator fun invoke(context: Context, locationWorkerConfiguration: LocationWorkerConfiguration){
-        with(locationWorkerConfiguration) {
-            enqueuePeriodicWork(context, buildPeriodicWorkRequest(requestInterval))
-        }
+class LocationWorkerManager @Inject constructor(
+    private val context: Context
+) {
+    companion object {
+        private const val LOCATION_PERIODIC_WORK_NAME = "location_periodic_work"
     }
 
-    private fun enqueuePeriodicWork(
-        appContext: Context,
-        periodicWorkRequest: PeriodicWorkRequest
-    ) {
-        WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
+    fun enqueuePeriodicLocation(build: LocationWorkerConfiguration.Builder.() -> Unit) {
+        val locationWorkerConfiguration = buildLocationWorkerConfiguration(build)
+
+        val periodWorkRequest = buildPeriodicWorkRequest(locationWorkerConfiguration)
+
+        enqueuePeriodicWork(periodWorkRequest)
+    }
+
+    private fun buildLocationWorkerConfiguration(build: LocationWorkerConfiguration.Builder.() -> Unit) =
+        LocationWorkerConfiguration.Builder().apply(build).build()
+
+    private fun enqueuePeriodicWork(periodicWorkRequest: PeriodicWorkRequest) {
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             LOCATION_PERIODIC_WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             periodicWorkRequest
@@ -32,11 +38,14 @@ object LocationWorkerManager {
     }
 
     private fun buildPeriodicWorkRequest(
-        requestInterval: RequestInterval
-    ) =
-        PeriodicWorkRequestBuilder<LocationWorker>(
-            requestInterval.minutes,
-            TimeUnit.MINUTES
-        ).build()
+        locationWorkerConfiguration: LocationWorkerConfiguration
+    ): PeriodicWorkRequest {
+        with(locationWorkerConfiguration) {
+            return PeriodicWorkRequestBuilder<LocationWorker>(
+                requestInterval.minutes,
+                TimeUnit.MINUTES
+            ).build()
+        }
+    }
 
 }

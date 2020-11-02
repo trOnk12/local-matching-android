@@ -6,40 +6,18 @@ import android.content.Context
 import android.content.pm.ProviderInfo
 import android.database.Cursor
 import android.net.Uri
-import androidx.work.Configuration
-import androidx.work.WorkManager
-import com.example.local_matching.location.LocationWorkerConfiguration
-import com.example.local_matching.location.LocationWorkerManager
 
-
-class WorkerMangerInitializer : ContentProvider() {
+abstract class Initializer : ContentProvider() {
 
     override fun onCreate(): Boolean {
         if (context != null) {
-            initializeWorkerManager(context!!)
-            initializeLocationWorkerManager(context!!)
+            initialize(context!!)
         }
 
         return true
     }
 
-    private fun initializeWorkerManager(context: Context) {
-        Configuration.Builder().build().let { configuration ->
-            WorkManager.initialize(
-                context.applicationContext,
-                configuration
-            )
-        }
-    }
-
-    private fun initializeLocationWorkerManager(context: Context) {
-        LocationWorkerConfiguration.Builder().build().let { locationWorkerConfiguration ->
-            LocationWorkerManager.initialize(
-                context.applicationContext,
-                locationWorkerConfiguration
-            )
-        }
-    }
+    abstract fun initialize(context: Context)
 
     override fun query(
         p0: Uri,
@@ -75,7 +53,7 @@ class WorkerMangerInitializer : ContentProvider() {
 
     private fun checkIfProvidedInfoIsCorrect(info: ProviderInfo?) {
         if (info == null) {
-            throw NullPointerException("YourLibraryInitProvider ProviderInfo cannot be null.");
+            throw NullPointerException("${javaClass.canonicalName} ProviderInfo cannot be null.");
         }
         // So if the authorities equal the library internal ones, the developer forgot to set his applicationId
         if ("com.example.local_matching.yourlibraryinitprovider" == info.authority) {
