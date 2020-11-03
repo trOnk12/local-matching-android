@@ -1,4 +1,4 @@
-package com.example.local_matching.location.repository.model
+package com.example.local_matching.model
 
 import android.location.Location
 

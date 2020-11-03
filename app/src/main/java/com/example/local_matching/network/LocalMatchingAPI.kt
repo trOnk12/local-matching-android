@@ -1,7 +1,7 @@
 package com.example.local_matching.network
 
-import com.example.local_matching.network.model.Location
-import com.example.local_matching.network.model.User
+import com.example.local_matching.model.Location
+import com.example.local_matching.model.User
 
 interface LocalMatchingAPI {
 

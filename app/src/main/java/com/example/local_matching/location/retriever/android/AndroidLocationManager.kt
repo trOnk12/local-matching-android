@@ -6,7 +6,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import com.example.local_matching.location.repository.model.LocationData
+import com.example.local_matching.model.LocationData
 import timber.log.Timber
 import javax.inject.Inject
 
